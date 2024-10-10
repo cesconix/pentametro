@@ -1,5 +1,9 @@
 ---
 import "@/styles/globals.css"
+import { PdfUploader } from "@/components/pdf-uploader"
+import { getPentaChecklist } from "@/lib/utils"
+
+const checklist = await getPentaChecklist()
 ---
 <html lang="it" class="dark">
   <head>
@@ -9,7 +13,9 @@ import "@/styles/globals.css"
     <meta name="generator" content={Astro.generator} />
     <title>Pentametro</title>
   </head>
-  <body class="bg-background flex items-center justify-center h-dvh">
-    Welcome to Pentametro!
+  <body class="bg-background flex flex-col">
+    <div>
+      <PdfUploader client:only checklist={checklist} />
+    </div>
   </body>
 </html>
