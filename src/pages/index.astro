@@ -1,9 +1,9 @@
 ---
 import "@/styles/globals.css"
 import { PdfUploader } from "@/components/pdf-uploader"
-import { getPentaChecklist } from "@/lib/utils"
+// import { getPentaChecklist } from "@/lib/utils"
 
-const checklist = await getPentaChecklist()
+// const checklist = await getPentaChecklist()
 ---
 <html lang="it" class="dark">
   <head>
@@ -15,7 +15,7 @@ const checklist = await getPentaChecklist()
   </head>
   <body class="bg-background flex flex-col">
     <div>
-      <PdfUploader client:only checklist={checklist} />
+      <PdfUploader client:only />
     </div>
   </body>
 </html>

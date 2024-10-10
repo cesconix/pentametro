@@ -1,7 +1,6 @@
 import * as openai from "@/lib/openai"
 import { getPentaChecklist } from "@/lib/utils"
 import type { APIRoute } from "astro"
-import { fromBase64 } from "pdf2pic"
 import { z } from "zod"
 
 export const POST: APIRoute = async ({ request }) => {
@@ -19,21 +18,11 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   /** convert pdf base64 to image */
-  const convert = fromBase64(base64, {
-    format: "webp",
-    quality: 100,
-    density: 300,
-    width: 595 * 2, // A4 width
-    height: 842 * 2 // A4 height
-  })
-
-  const image = await convert(1, { responseType: "base64" })
-
-  if (!image.base64) {
-    return new Response(JSON.stringify({ message: "invalid filetype" }), {
-      status: 400
-    })
-  }
+  // if (!imageBase64) {
+  //   return new Response(JSON.stringify({ message: "invalid filetype" }), {
+  //     status: 400
+  //   })
+  // }
 
   /** generate penta report */
   const checklist = await getPentaChecklist()
@@ -44,7 +33,7 @@ export const POST: APIRoute = async ({ request }) => {
     })
   }
 
-  const stream = await openai.generatePentaReport(image.base64, checklist)
+  const stream = await openai.generatePentaReport(base64, checklist)
 
   return new Response(stream, {
     headers: {

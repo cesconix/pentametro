@@ -5,3 +5,5 @@ interface ImportMetaEnv {
   readonly UPSTASH_REDIS_TOKEN: string
   readonly GITHUB_ACCESS_TOKEN: string
 }
+
+declare module "pdfjs-dist/build/pdf.min.mjs" // FIX: check @types/pdfjs-dist
