@@ -2,7 +2,7 @@ import react from "@astrojs/react"
 import tailwind from "@astrojs/tailwind"
 import { defineConfig } from "astro/config"
 
-import vercel from "@astrojs/vercel/serverless";
+import vercel from "@astrojs/vercel/serverless"
 
 export default defineConfig({
   output: "server",
@@ -14,5 +14,7 @@ export default defineConfig({
     })
   ],
 
-  adapter: vercel()
+  adapter: vercel({
+    maxDuration: 40
+  })
 })
