@@ -73,7 +73,7 @@ Il report finale deve essere in formato JSON con la seguente struttura, in una s
   {
     "id": "nome del requisito 1",
     "compliant": true/false,
-    "comment": "breve spiegazione del risultato"
+    "comment": "breve spiegazione del risultato e consiglio per il miglioramento"
   },
   ...
 ]

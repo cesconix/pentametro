@@ -9,6 +9,7 @@ const PdfUploader: React.FC = () => {
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
+
     if (file && file.type === "application/pdf") {
       const fileReader = new FileReader()
 
@@ -21,7 +22,7 @@ const PdfUploader: React.FC = () => {
 
           for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
             const page = await pdf.getPage(pageNum)
-            const viewport = page.getViewport({ scale: 1.5 })
+            const viewport = page.getViewport({ scale: 2 })
 
             const canvas = document.createElement("canvas")
             const context = canvas.getContext("2d")
@@ -59,11 +60,6 @@ const PdfUploader: React.FC = () => {
   }
 
   const handleSubmit = async () => {
-    if (images.length === 0) {
-      alert("Prima carica un PDF e converti le pagine in immagini.")
-      return
-    }
-
     try {
       const response = await fetch("/api/evaluate", {
         method: "POST",
@@ -73,10 +69,8 @@ const PdfUploader: React.FC = () => {
         body: JSON.stringify({ base64: images[0].split(",")[1] })
       })
 
-      if (response.ok) {
-        alert("Immagini caricate con successo!")
-      } else {
-        alert("Errore nel caricamento delle immagini.")
+      if (!response.ok) {
+        alert(response.statusText)
       }
     } catch (error) {
       console.error("Errore nel caricamento delle immagini:", error)
@@ -88,7 +82,6 @@ const PdfUploader: React.FC = () => {
     <div>
       <h1>PDF to Image Converter</h1>
       <input type="file" accept="application/pdf" onChange={handleFileChange} />
-      {loading && <p>Caricamento in corso...</p>}
       <button
         onClick={handleSubmit}
         className="px-4 py-2 bg-blue-500 text-white rounded-md"
