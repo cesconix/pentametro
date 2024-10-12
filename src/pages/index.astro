@@ -1,11 +1,19 @@
 ---
 import "@/styles/globals.css"
 import { PdfUploader } from "@/components/pdf-uploader"
-// import { getPentaChecklist } from "@/lib/utils"
+import PentaReport from "@/components/penta-report.astro"
+import { Button } from "@/components/ui/button"
+import { getPentaChecklist } from "@/lib/utils"
+import {
+  BookTextIcon,
+  CircleGaugeIcon,
+  GithubIcon,
+  PlusIcon
+} from "lucide-react"
 
-// const checklist = await getPentaChecklist()
+const checklist = await getPentaChecklist()
 ---
-<html lang="it" class="dark">
+<html lang="it" class="light">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -13,9 +21,50 @@ import { PdfUploader } from "@/components/pdf-uploader"
     <meta name="generator" content={Astro.generator} />
     <title>Pentametro</title>
   </head>
-  <body class="bg-background flex flex-col">
-    <div>
-      <PdfUploader client:only />
-    </div>
+  <body class="bg-muted grid grid-cols-1 md:grid-cols-2 h-screen">
+      <div class="bg-background flex flex-col divide-y">
+        <header class="flex bg-background p-3 justify-between">
+          <h1 class="font-medium flex items-center gap-1.5">
+            <CircleGaugeIcon className="w-6 h-6 text-primary" />
+            <span>Pentametro</span>
+          </h1>
+          <div class="flex items-center gap-1">
+          <Button variant={"outline"} size={"sm"} className="h-9">
+            <BookTextIcon className="w-5 h-5 mr-1" />
+            Guida</Button>
+          <Button variant={"outline"} size={"sm"} className="h-9">
+            <GithubIcon className="w-5 h-5 mr-1" />
+            GitHub</Button>
+            <Button variant={"default"} size={"sm"} className="h-9"><PlusIcon className="w-5 h-5" /></Button>
+          </div>
+        </header>
+        <div class="flex flex-col flex-1 p-6">
+          <div class="flex flex-1 items-center justify-center">
+            <PdfUploader client:only />
+          </div>
+          <footer class="flex flex-col items-center justify-center p-3 space-y-1">
+            <span class="text-sm text-muted-foreground">100% free and open source </span>
+          </footer>
+        </div>
+      </div>
+      <div class="md:overflow-y-auto p-6 bg-muted">
+        <div class="flex h-full flex-col justify-center p-6">
+        <h1 class="text-2xl font-semibold leading-relaxed">Hey! Sei a prova di Penta?</h1>
+        <p class="text-muted-foreground text-xl leading-relaxed">Valuta il tuo curriculum in base alla guida galattica di <a href="" class="underline underline-offset-4 hover:text-primary">Guido Penta</a>. Carica il CV e scoprilo subito!</p>
+          <a href="https://www.buymeacoffee.com/cesconix" target="_blank">
+            <img 
+              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+              alt="Buy Me A Coffee" 
+              class="h-9 mt-6"
+            />
+          </a>
+
+        <!-- copyrights -->
+        <div>
+          <p class="text-muted-foreground text-sm mt-6">Made with ❤ by <a href="https://cesco.me" target="_blank" class="underline underline-offset-4 hover:text-primary">Francesco Pasqua</a></p>
+        </div>
+        </div>
+        <!-- <PentaReport checklist={checklist} report={[]} /> -->
+      </div>
   </body>
 </html>

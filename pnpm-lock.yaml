@@ -35,6 +35,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      lucide-preact:
+        specifier: ^0.452.0
+        version: 0.452.0(preact@10.24.2)
       lucide-react:
         specifier: ^0.451.0
         version: 0.451.0(react@18.3.1)
@@ -1592,6 +1595,11 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  lucide-preact@0.452.0:
+    resolution: {integrity: sha512-YNbsfxPavsgocuaojYB9K5eCQVJIKygmVdj6PfpA9zee92GYqi/PBAK77V2RyjnUfVmkKRb1FfXriMQhKN5Bjg==}
+    peerDependencies:
+      preact: ^10.5.13
+
   lucide-react@0.451.0:
     resolution: {integrity: sha512-OwQ3uljZLp2cerj8sboy5rnhtGTCl9UCJIhT1J85/yOuGVlEH+xaUPR7tvNdddPvmV5M5VLdr7cQuWE3hzA4jw==}
     peerDependencies:
@@ -2007,6 +2015,9 @@ packages:
   postcss@8.4.47:
     resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
     engines: {node: ^10 || ^12 || >=14}
+
+  preact@10.24.2:
+    resolution: {integrity: sha512-1cSoF0aCC8uaARATfrlz4VCBqE8LwZwRfLgkxJOQwAlQt6ayTmi0D9OF7nXid1POI5SZidFuG9CnlXbDfLqY/Q==}
 
   preferred-pm@4.0.0:
     resolution: {integrity: sha512-gYBeFTZLu055D8Vv3cSPox/0iTPtkzxpLroSYYA7WXgRi31WCJ51Uyl8ZiPeUUjyvs2MBzK+S8v9JVUgHU/Sqw==}
@@ -4261,6 +4272,10 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+  lucide-preact@0.452.0(preact@10.24.2):
+    dependencies:
+      preact: 10.24.2
+
   lucide-react@0.451.0(react@18.3.1):
     dependencies:
       react: 18.3.1
@@ -4834,6 +4849,8 @@ snapshots:
       nanoid: 3.3.7
       picocolors: 1.1.0
       source-map-js: 1.2.1
+
+  preact@10.24.2: {}
 
   preferred-pm@4.0.0:
     dependencies:

@@ -19,6 +19,7 @@
     "astro": "^4.16.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "lucide-preact": "^0.452.0",
     "lucide-react": "^0.451.0",
     "openai": "^4.67.3",
     "pdfjs-dist": "^4.7.76",

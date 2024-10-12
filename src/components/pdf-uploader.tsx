@@ -1,7 +1,9 @@
 import * as pdfjsLib from "pdfjs-dist/build/pdf.min.mjs"
 import "pdfjs-dist/build/pdf.worker.min.mjs"
+import { FileUpIcon } from "lucide-react"
 import type React from "react"
 import { type ChangeEvent, useState } from "react"
+import { Button } from "./ui/button"
 
 const PdfUploader: React.FC = () => {
   const [images, setImages] = useState<string[]>([])
@@ -66,7 +68,9 @@ const PdfUploader: React.FC = () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ base64: images[0].split(",")[1] })
+        body: JSON.stringify({
+          base64Images: images.map((image) => image.split(",")[1])
+        })
       })
 
       if (!response.ok) {
@@ -77,17 +81,20 @@ const PdfUploader: React.FC = () => {
       alert("Errore nel caricamento delle immagini.")
     }
   }
-
   return (
     <div>
-      <h1>PDF to Image Converter</h1>
-      <input type="file" accept="application/pdf" onChange={handleFileChange} />
-      <button
-        onClick={handleSubmit}
-        className="px-4 py-2 bg-blue-500 text-white rounded-md"
-      >
-        Upload Images
-      </button>
+      <div className="flex flex-col items-center w-80 text-center">
+        <FileUpIcon strokeWidth={1.3} className="w-9 h-9 text-primary mb-4" />
+        <h3 className="font-bold mb-1">Carica il CV</h3>
+        <p className="text-muted-foreground text-sm">
+          Seleziona un file PDF del tuo curriculum per iniziare. Il file non
+          sarà salvato.
+        </p>
+        <Button size={"sm"} className="mt-5">
+          Scegli file
+        </Button>
+      </div>
+      {/* <input type="file" accept="application/pdf" onChange={handleFileChange} /> */}
       <div>
         {images.map((image, index) => (
           <div key={index}>
