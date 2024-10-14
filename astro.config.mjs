@@ -15,6 +15,6 @@ export default defineConfig({
   ],
 
   adapter: vercel({
-    maxDuration: 40
+    maxDuration: 60
   })
 })
