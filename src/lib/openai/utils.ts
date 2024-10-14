@@ -28,18 +28,17 @@ export function parseChatCompletion(
     throw new Error("failed to evaluate")
   }
 
-  const startIndex = answer.indexOf(brackets[0])
-  const endIndex = answer.lastIndexOf(brackets[1])
+  return parseChunk(answer, brackets)
+}
 
-  if (startIndex === -1 || endIndex === -1 || startIndex >= endIndex) {
-    console.error(`invalid json format. answer: "${answer}"`)
-    throw new Error("invalid json format")
-  }
+export function parseChunk(chunk: string, brackets: "[]" | "{}") {
+  const startIdx = chunk.indexOf(brackets[0])
+  const endIdx = chunk.lastIndexOf(brackets[1]) + 1
 
-  const jsonString = answer.slice(startIndex, endIndex + 1).trim()
+  const jsonString = chunk.slice(startIdx, endIdx)
 
   try {
-    return JSON.parse(jsonString) as unknown[]
+    return JSON.parse(jsonString)
   } catch (error) {
     console.error(`json parsing failed. json string: "${jsonString}"`)
     throw new Error("json parsing failed")

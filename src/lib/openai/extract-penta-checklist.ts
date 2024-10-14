@@ -1,3 +1,4 @@
+import type { PentaChecklist } from "../types"
 import { createClient, parseChatCompletion } from "./utils"
 
 export async function extractPentaChecklist(markdown: string) {
@@ -17,35 +18,66 @@ export async function extractPentaChecklist(markdown: string) {
     ]
   })
 
-  return parseChatCompletion(completion, "[]")
+  return parseChatCompletion(completion, "[]") as PentaChecklist
 }
 
 const systemPrompt = `
-Sei un assistente specializzato nell'analisi di documenti markdown.
-Riceverai un documento markdown che funge da guida sulla costruzione di un CV adatto ai developer.
-La tua missione è analizzare il contenuto della guida e individuare le categorie principali relative alla costruzione del CV (es. informazioni personali, esperienze professionali, formazione, competenze, etc.). 
-Per ciascuna categoria, crea una checklist in formato JSON. 
-Il JSON deve avere la seguente struttura:
+Sei un assistente esperto nell'analisi di documenti in formato markdown. Riceverai un documento markdown che funge da guida per la costruzione di un CV ottimizzato per sviluppatori.
+
+**Obiettivo:**
+Analizzare il documento markdown per identificare le principali **categorie** relative alla costruzione del CV e creare una **checklist dettagliata** di requisiti per ciascuna categoria, che servirà per valutare la conformità dei CV alla guida.
+
+**Istruzioni:**
+1. **Identifica** tutte le categorie principali trattate nella guida.
+2. **Crea una checklist dettagliata** per ciascuna categoria, in formato JSON, seguendo la struttura sottostante.
+3. **Assicurati** che:
+   - Le **proprietà del JSON** (come 'category' e 'requirement') siano in inglese, ma i **valori** (come i nomi delle categorie, requisiti e descrizioni) siano in italiano.
+   - Le categorie siano riportate **senza articoli iniziali** ('Il', 'La', 'L’', etc.), mantenendo solo il nome principale.
+   - Le descrizioni siano concise e in linea con il contenuto della guida.
+   - Ogni categoria e requisito sia **chiaro e specifico** per poter essere utilizzato nella verifica della conformità dei CV.
+
+**Formato JSON richiesto:**
+
+\`\`\`json
 [
   {
-    "category": "Nome della categoria (senza articoli iniziali come 'Il', 'La', 'L’', etc.)",
-    "mandatory": true/false,
+    "category": "Nome della categoria (senza articoli)",
     "checklist": [
         {
           "requirement": "Nome del requisito in italiano",
-          "description": "Descrizione del requisito come da guida, in italiano",
+          "description": "Descrizione dettagliata del requisito, in italiano"
         },
         ...
     ]
   },
   ...
 ]
+\`\`\`
 
-Assicurati che:
-1. Le proprietà del JSON devono essere in inglese, mentre i valori (ad esempio il nome della categoria, i requisiti e le descrizioni) devono essere in italiano. 
-2. Le categorie siano riportate senza articoli iniziali, mantenendo solo il nome principale. 
-3. Le categorie e i requisiti devono essere concisi e ogni descrizione deve seguire la guida. 
-4. La checklist deve essere specifica, così da poterla utilizzare successivamente per analizzare CV e verificarne la conformità alla guida.
-5. Se una categoria è consigliata, imposta il valore di "mandatory" a false.
-6. Se una categoria è fondamentale o importante, imposta il valore di "mandatory" a true.
+**Requisiti aggiuntivi:**
+- Ogni descrizione dei requisiti deve essere **sufficientemente dettagliata**, ma **non prolissa**.
+- Le categorie devono essere **concise**, rappresentando i concetti chiave della guida.
+- Evita di includere informazioni ridondanti o fuori contesto.
+
+**Esempio di output:**
+\`\`\`json
+[
+  {
+    "category": "Esperienza Professionale",
+    "checklist": [
+        {
+          "requirement": "Includere esperienze rilevanti",
+          "description": "Elencare le esperienze professionali legate allo sviluppo software, evidenziando progetti e tecnologie utilizzate."
+        },
+        {
+          "requirement": "Data di inizio e fine",
+          "description": "Specificare le date di inizio e fine per ogni esperienza lavorativa."
+        }
+    ]
+  },
+  ...
+]
+\`\`\`
+
+Consegna un **JSON ben strutturato**, pronto per essere utilizzato in un sistema di analisi automatica della conformità dei CV.
 `.trim()

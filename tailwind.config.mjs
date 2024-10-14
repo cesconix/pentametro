@@ -4,6 +4,13 @@ export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui"],
+        logo: ["Lobster", "cursive"]
+      },
+      backgroundImage: {
+        "square-pattern": "url('/square-pattern.png')"
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

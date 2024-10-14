@@ -17,14 +17,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error }), { status: 400 })
   }
 
-  /** convert pdf base64 to image */
-  // if (!imageBase64) {
-  //   return new Response(JSON.stringify({ message: "invalid filetype" }), {
-  //     status: 400
-  //   })
-  // }
-
-  /** generate penta report */
+  /** generate penta checklist */
   const checklist = await getPentaChecklist()
 
   if (!checklist) {

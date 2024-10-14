@@ -1,8 +1,9 @@
+import type { PentaChecklist } from "../types"
 import { createClient } from "./utils"
 
 export async function generatePentaReport(
   base64Images: string[],
-  checklist: unknown[]
+  checklist: PentaChecklist
 ) {
   const openai = createClient()
 

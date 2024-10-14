@@ -1,57 +1,21 @@
 ---
 import "@/styles/globals.css"
-import Header from "@/components/layout/header.astro"
-import { PdfUploader } from "@/components/pdf-uploader"
-import PentaReport from "@/components/penta-report.astro"
-import { Button } from "@/components/ui/button"
+import { App } from "@/components/app/app"
+import BaseHead from "@/components/layout/base-head.astro"
 import { getPentaChecklist } from "@/lib/utils"
-import {
-  BookTextIcon,
-  CircleGaugeIcon,
-  GithubIcon,
-  PlusIcon
-} from "lucide-react"
 
 const checklist = await getPentaChecklist()
 ---
+<!DOCTYPE html>
 <html lang="it" class="light">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Pentametro</title>
+    <BaseHead title={"Pentametro – Valuta il tuo CV con Guido Penta!"} />
   </head>
-  <body class="bg-muted grid grid-cols-1 md:grid-cols-2 h-screen">
-      <div class="bg-background flex flex-col divide-y">
-        <Header />
-        <div class="flex flex-col flex-1 p-6">
-          <div class="flex flex-1 items-center justify-center">
-            <PdfUploader client:only />
-          </div>
-          <footer class="flex flex-col items-center justify-center p-3 space-y-1">
-            <span class="text-sm text-muted-foreground">100% free and open source </span>
-          </footer>
-        </div>
-      </div>
-      <div class="md:overflow-y-auto p-6 bg-muted">
-        <div class="flex h-full flex-col justify-center p-6">
-        <h1 class="text-2xl font-semibold leading-relaxed">Hey! Sei a prova di Penta?</h1>
-        <p class="text-muted-foreground text-xl leading-relaxed">Valuta il tuo curriculum in base alla guida galattica di <a href="" class="underline underline-offset-4 hover:text-primary">Guido Penta</a>. Carica il CV e scoprilo subito!</p>
-          <a href="https://www.buymeacoffee.com/cesconix" target="_blank">
-            <img 
-              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
-              alt="Buy Me A Coffee" 
-              class="h-9 mt-6"
-            />
-          </a>
-
-        <!-- copyrights -->
-        <div>
-          <p class="text-muted-foreground text-sm mt-6">Made with ❤ by <a href="https://cesco.me" target="_blank" class="underline underline-offset-4 hover:text-primary">Francesco Pasqua</a></p>
-        </div>
-        </div>
-        <!-- <PentaReport checklist={checklist} report={[]} /> -->
-      </div>
+  <body>
+    {
+      checklist 
+        ? (<App client:only checklist={checklist} />) 
+        : (<p class="p-3">Error! :(</p>)
+    }
   </body>
 </html>
