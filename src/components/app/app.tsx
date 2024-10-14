@@ -72,13 +72,11 @@ export const App = (props: MainProps) => {
       {/* Left */}
       <div className="bg-background flex flex-col divide-y md:h-screen">
         <Header sessionActive={sessionActive} onNewClick={handleReset} />
-        <div className="flex h-full overflow-y-auto">
-          {sessionActive ? (
-            <PdfNavigator pages={pages} />
-          ) : (
-            <PdfLoader onLoad={setPages} />
-          )}
-        </div>
+        {sessionActive ? (
+          <PdfNavigator pages={pages} />
+        ) : (
+          <PdfLoader onLoad={setPages} />
+        )}
       </div>
 
       {/* Right */}

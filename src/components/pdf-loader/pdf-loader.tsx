@@ -34,7 +34,7 @@ export const PdfLoader = (props: PdfLoaderProps) => {
   }
 
   return (
-    <div className="flex flex-col flex-1 p-6">
+    <div className="flex flex-col h-full p-3">
       <div className="flex flex-1 items-center justify-center">
         <div className="flex flex-col items-center w-80 text-center">
           <FileUpIcon strokeWidth={1.3} className="w-9 h-9 text-primary mb-4" />
