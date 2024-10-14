@@ -1,8 +1,9 @@
+import type { PentaChecklist } from "../types"
 import { createClient } from "./utils"
 
 export async function generatePentaReport(
-  base64: string,
-  checklist: unknown[]
+  base64Images: string[],
+  checklist: PentaChecklist
 ) {
   const openai = createClient()
 
@@ -16,12 +17,10 @@ export async function generatePentaReport(
       },
       {
         role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: { url: `data:image/webp;base64,${base64}` }
-          }
-        ]
+        content: base64Images.map((base64) => ({
+          type: "image_url",
+          image_url: { url: `data:image/png;base64,${base64}` }
+        }))
       }
     ]
   })
@@ -62,21 +61,28 @@ export async function generatePentaReport(
 
 const systemPrompt = (checklist: string) =>
   `
-Sei un assistente specializzato nell'analisi di CV e nella generazione di report di conformità basati su checklist predefinite. Riceverai un'immagine di un CV. La checklist con le categorie e i requisiti da verificare è la seguente:
+Rimani calmo e analizza attentamente. Sei un assistente esperto nell'analisi di CV e nella generazione di report di conformità basati su checklist predefinite. Riceverai un'immagine di un CV e dovrai confrontarla con i requisiti definiti nella seguente checklist:
 
 ${checklist}
 
-Il tuo compito è analizzare il CV, confrontarlo con i requisiti della checklist fornita, e generare un report di conformità.
+Non è presente alcun annuncio di lavoro specifico. Il tuo obiettivo è esaminare il CV, verificare la conformità rispetto ai requisiti indicati, e produrre un report strutturato e generale, applicabile a qualsiasi CV.
 
-Il report finale deve essere in formato JSON con la seguente struttura, in una sola riga e senza spazi tra le proprietà:
+Il report deve essere generato in formato JSON, seguendo questa struttura e formato (in una sola riga, senza spazi tra le proprietà):
 [
   {
-    "id": "nome del requisito 1",
+    "id": "Nome del requisito",
     "compliant": true/false,
-    "comment": "breve spiegazione del risultato e consiglio per il miglioramento"
+    "comment": "Breve spiegazione del risultato. Se il requisito non è soddisfatto, fornisci una spiegazione del problema e un suggerimento positivo."
   },
   ...
 ]
 
-Il valore di "id" deve coincidere con il nome del requisito nella checklist, in modo che il risultato sia accessibile direttamente dal titolo del requisito. Assicurati che i commenti siano brevi e chiari, evidenziando le eventuali mancanze o i punti di forza del CV rispetto alla checklist.
+Assicurati che:
+1. L'ID corrisponda esattamente al nome del requisito nella checklist per un accesso diretto ai risultati.
+2. Se il requisito non è soddisfatto o non può essere verificato, imposta "compliant" su false e fornisci un commento che spieghi il problema e offra un consiglio costruttivo.
+3. Il commento deve essere argomentato e costruttivo, aiutando il candidato a migliorare il CV.
+4. Il commento deve essere breve, chiaro e conciso, evitando riferimenti ad annunci di lavoro o altri contesti non forniti. 
+5. Il commento non deve includere valutazioni vaghe o generiche.
+
+Concentrati esclusivamente sui requisiti della checklist e sul contenuto del CV.
 `.trim()

@@ -1,21 +1,21 @@
 ---
 import "@/styles/globals.css"
-import { PdfUploader } from "@/components/pdf-uploader"
-// import { getPentaChecklist } from "@/lib/utils"
+import { App } from "@/components/app/app"
+import BaseHead from "@/components/layout/base-head.astro"
+import { getPentaChecklist } from "@/lib/utils"
 
-// const checklist = await getPentaChecklist()
+const checklist = await getPentaChecklist()
 ---
-<html lang="it" class="dark">
+<!DOCTYPE html>
+<html lang="it" class="light">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Pentametro</title>
+    <BaseHead title={"Pentametro – Valuta il tuo CV con Guido Penta!"} />
   </head>
-  <body class="bg-background flex flex-col">
-    <div>
-      <PdfUploader client:only />
-    </div>
+  <body>
+    {
+      checklist 
+        ? (<App client:only checklist={checklist} />) 
+        : (<p class="p-3">Error! :(</p>)
+    }
   </body>
 </html>

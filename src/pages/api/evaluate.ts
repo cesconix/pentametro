@@ -4,27 +4,20 @@ import type { APIRoute } from "astro"
 import { z } from "zod"
 
 export const POST: APIRoute = async ({ request }) => {
-  let base64: string
+  let base64Images: string[]
 
   /** validate request */
   try {
     const data = z
-      .object({ base64: z.string().base64() })
+      .object({ base64Images: z.array(z.string().base64()) })
       .parse(await request.json())
-    base64 = data.base64
+    base64Images = data.base64Images
   } catch (error) {
     console.error("invalid request", error)
     return new Response(JSON.stringify({ error }), { status: 400 })
   }
 
-  /** convert pdf base64 to image */
-  // if (!imageBase64) {
-  //   return new Response(JSON.stringify({ message: "invalid filetype" }), {
-  //     status: 400
-  //   })
-  // }
-
-  /** generate penta report */
+  /** generate penta checklist */
   const checklist = await getPentaChecklist()
 
   if (!checklist) {
@@ -33,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
     })
   }
 
-  const stream = await openai.generatePentaReport(base64, checklist)
+  const stream = await openai.generatePentaReport(base64Images, checklist)
 
   return new Response(stream, {
     headers: {
