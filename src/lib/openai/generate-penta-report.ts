@@ -1,3 +1,4 @@
+import type { ChatCompletionContentPart } from "openai/resources/index.mjs"
 import type { PentaChecklist } from "../types"
 import { createClient } from "./utils"
 
@@ -6,6 +7,11 @@ export async function generatePentaReport(
   checklist: PentaChecklist
 ) {
   const openai = createClient()
+
+  const images: ChatCompletionContentPart[] = base64Images.map((base64) => ({
+    type: "image_url",
+    image_url: { url: `data:image/png;base64,${base64}` }
+  }))
 
   const stream = await openai.chat.completions.create({
     stream: true,
@@ -17,10 +23,13 @@ export async function generatePentaReport(
       },
       {
         role: "user",
-        content: base64Images.map((base64) => ({
-          type: "image_url",
-          image_url: { url: `data:image/png;base64,${base64}` }
-        }))
+        content: [
+          {
+            type: "text",
+            text: `Il CV è composto da ${base64Images.length} pagine. Allego le pagine.`
+          },
+          ...images
+        ]
       }
     ]
   })
@@ -61,13 +70,17 @@ export async function generatePentaReport(
 
 const systemPrompt = (checklist: string) =>
   `
-Rimani calmo e analizza attentamente. Sei un assistente esperto nell'analisi di CV e nella generazione di report di conformità basati su checklist predefinite. Riceverai un'immagine di un CV e dovrai confrontarla con i requisiti definiti nella seguente checklist:
+Sei un assistente esperto nell'analisi di CV e nella generazione di report di conformità basati su checklist predefinite. Riceverai una o più immagini di un CV, ciascuna rappresentante una pagina. Devi analizzare tutte le pagine ricevute e confrontarle con la checklist seguente:
 
 ${checklist}
 
-Non è presente alcun annuncio di lavoro specifico. Il tuo obiettivo è esaminare il CV, verificare la conformità rispetto ai requisiti indicati, e produrre un report strutturato e generale, applicabile a qualsiasi CV.
+### Istruzioni per l'analisi:
+1. **Multipagina**: Se il CV è composto da più pagine, analizza attentamente ciascuna pagina separatamente, ma considera il documento nel suo complesso.
+2. **Foto Profilo**: Identifica una foto profilo oppure un avatar.
+3. **Analisi dei Contenuti**: Verifica la conformità dei contenuti rispetto ai requisiti della checklist. Concentrati esclusivamente sui requisiti forniti.
+4. **Formato CV**: Controlla accuratamente il formato del CV e verifica che sia conforme al requisito specificato.
+5. **Generazione del Report**: Produci un report in formato JSON, seguendo questa struttura (in una sola riga senza spazi tra le proprietà):
 
-Il report deve essere generato in formato JSON, seguendo questa struttura e formato (in una sola riga, senza spazi tra le proprietà):
 [
   {
     "id": "Nome del requisito",
@@ -77,12 +90,10 @@ Il report deve essere generato in formato JSON, seguendo questa struttura e form
   ...
 ]
 
-Assicurati che:
-1. L'ID corrisponda esattamente al nome del requisito nella checklist per un accesso diretto ai risultati.
-2. Se il requisito non è soddisfatto o non può essere verificato, imposta "compliant" su false e fornisci un commento che spieghi il problema e offra un consiglio costruttivo.
-3. Il commento deve essere argomentato e costruttivo, aiutando il candidato a migliorare il CV.
-4. Il commento deve essere breve, chiaro e conciso, evitando riferimenti ad annunci di lavoro o altri contesti non forniti. 
-5. Il commento non deve includere valutazioni vaghe o generiche.
+### Criteri di Valutazione:
+- L'ID deve corrispondere esattamente al nome del requisito nella checklist.
+- Se un requisito non è soddisfatto o non può essere verificato (es. lingua non identificabile, formato Europass errato), imposta "compliant" su false e fornisci un commento costruttivo.
+- Fornisci commenti chiari e concisi con suggerimenti pratici per migliorare il CV. Evita riferimenti a contesti non rilevanti come annunci di lavoro.
 
-Concentrati esclusivamente sui requisiti della checklist e sul contenuto del CV.
+Analizza tutte le pagine e fornisci un report dettagliato.
 `.trim()
