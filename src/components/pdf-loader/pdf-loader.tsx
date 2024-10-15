@@ -1,5 +1,6 @@
 import { FileUpIcon } from "lucide-react"
-import type { ChangeEvent } from "react"
+import { type ChangeEvent, useState } from "react"
+import { PrivacyPolicyModal } from "../privacy"
 import { Button } from "../ui/button"
 import { convertPdfBufferToBase64Strings } from "./utils"
 
@@ -8,6 +9,8 @@ type PdfLoaderProps = {
 }
 
 export const PdfLoader = (props: PdfLoaderProps) => {
+  const [privacyPolicyOpen, setPrivacyPolicyOpen] = useState(false)
+
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
 
@@ -33,6 +36,15 @@ export const PdfLoader = (props: PdfLoaderProps) => {
     fileReader.readAsArrayBuffer(file)
   }
 
+  const handleAcceptPrivacyPolicy = () => {
+    setPrivacyPolicyOpen(false)
+    document.getElementById("cvFile")?.click()
+  }
+
+  const handleCancelPrivacyPolicy = () => {
+    setPrivacyPolicyOpen(false)
+  }
+
   return (
     <div className="flex flex-col h-full p-3">
       <div className="flex flex-1 items-center justify-center">
@@ -43,20 +55,27 @@ export const PdfLoader = (props: PdfLoaderProps) => {
             Seleziona un file PDF del tuo curriculum per iniziare. Il file non
             sarà salvato.
           </p>
-          <input
-            id="cvFile"
-            className="hidden"
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileChange}
+          <div className="flex gap-2">
+            <input
+              id="cvFile"
+              className="hidden"
+              type="file"
+              accept="application/pdf"
+              onChange={handleFileChange}
+            />
+            <Button
+              size={"sm"}
+              className="mt-5"
+              onClick={() => setPrivacyPolicyOpen(true)}
+            >
+              Scegli file
+            </Button>
+          </div>
+          <PrivacyPolicyModal
+            open={privacyPolicyOpen}
+            onAccept={handleAcceptPrivacyPolicy}
+            onCancel={handleCancelPrivacyPolicy}
           />
-          <Button
-            size={"sm"}
-            className="mt-5"
-            onClick={() => document.getElementById("cvFile")?.click()}
-          >
-            Scegli file
-          </Button>
         </div>
       </div>
       <div className="flex flex-col items-center justify-center p-3 space-y-1">
