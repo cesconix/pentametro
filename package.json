@@ -14,6 +14,7 @@
     "@astrojs/react": "^3.6.2",
     "@astrojs/tailwind": "^5.1.2",
     "@astrojs/vercel": "^7.8.1",
+    "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@upstash/redis": "^1.34.3",
