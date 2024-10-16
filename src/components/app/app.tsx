@@ -93,9 +93,15 @@ export const App = (props: MainProps) => {
           <Welcome />
         )}
         {loading && (
-          <div className="flex items-center justify-center text-sm text-muted-foreground p-6">
-            <LoaderIcon className="w-4 h-4 mr-2 animate-spin" />
-            Valutazione in corso...
+          <div className="flex flex-col items-center p-6 text-muted-foreground space-y-5">
+            <div className="flex items-center justify-center text-sm">
+              <LoaderIcon className="w-4 h-4 mr-2 animate-spin" />
+              Valutazione in corso...
+            </div>
+            <span className="text-xs text-center text-muted-foreground/80">
+              Pentametro può commettere errori.
+              <br /> Ci scusiamo per eventuali imprecisioni.
+            </span>
           </div>
         )}
       </div>
