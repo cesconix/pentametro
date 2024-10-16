@@ -1,47 +1,32 @@
-# Astro Starter Kit: Minimal
+# Pentametro
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Pentametro è uno strumento open source che valuta la conformità dei CV rispetto alla guida di Guido Penta. Utilizza OpenAI per analizzare il CV e fornisce un report dettagliato con una checklist di requisiti e un punteggio finale.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## 📘 Come funziona
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Pentametro utilizza diversi servizi per gestire il processo di analisi e valutazione:
 
-## 🚀 Project Structure
+1. **Caricamento del CV**: L'utente carica il CV in formato PDF. Il documento viene convertito in immagini in formato base64 (PNG) e inviato a OpenAI come prompt per estrarre le informazioni necessarie.
 
-Inside of your Astro project, you'll see the following folders and files:
+2. **Upstash Redis**: Utilizziamo Upstash Redis per due scopi principali:
+   - **Ultimo commit**: Pentametro tiene traccia dell'ultimo commit del repository GitHub della guida di Guido Penta. Ogni volta che viene aggiornato, la checklist dei requisiti viene aggiornata automaticamente.
+   - **Checklist**: La checklist dei requisiti estratti viene salvata in Upstash Redis per consentire un rapido accesso e aggiornamento, ottimizzando i costi quando gli utenti utilizzano l'app. Invece di creare il contesto dalla guida di Penta ogni volta (che contiene molte parole e quindi molti token), utilizziamo la checklist che ha già i requisiti estrapolati dalla guida ed è un JSON più leggero.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+3. **Analisi e report**: Una volta completata l'analisi del CV, viene generato un report che confronta il CV con la checklist dei requisiti. Il report contiene un punteggio di conformità finale.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## ⚠️ Problemi noti
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- **Formati Europass**: Alcuni CV in formato Europass potrebbero non essere riconosciuti correttamente.
+- **Riconoscimento foto profilo**: Le foto profilo o avatar potrebbero non essere riconosciute correttamente, specialmente quando sono di piccole dimensioni.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 🤝 Come contribuire
 
-## 🧞 Commands
+1. Fai il fork del progetto.
+2. Crea un branch (`git checkout -b feat/il-tuo-contributo`).
+3. Effettua il commit delle modifiche (`git commit -m 'feat: conventional commit'`).
+4. Esegui il push (`git push origin feat/il-tuo-contributo`).
+5. Apri una pull request.
 
-All commands are run from the root of the project, from a terminal:
+## 👮 Licenza
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Il progetto è rilasciato sotto licenza MIT.
