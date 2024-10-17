@@ -15,7 +15,7 @@ type PrivacyPolicyModalProps = {
 }
 
 const Heading = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-base font-medium mb-2 mt-5">{children}</h2>
+  <h2 className="text-[15px] font-medium mb-1 mt-5">{children}</h2>
 )
 const Paragraph = ({ children }: { children: React.ReactNode }) => (
   <p className="text-sm mb-2 leading-normal text-muted-foreground">
@@ -40,7 +40,7 @@ export const PrivacyPolicyModal = (props: PrivacyPolicyModalProps) => (
             gestiti i dati durante l'utilizzo del servizio.
           </Paragraph>
 
-          <Heading>1. Nessuna memorizzazione dei dati personali</Heading>
+          <Heading>Nessuna memorizzazione dei dati personali</Heading>
 
           <Paragraph>
             Pentametro non memorizza né salva alcun dato personale o documento
@@ -49,7 +49,7 @@ export const PrivacyPolicyModal = (props: PrivacyPolicyModalProps) => (
             subito dopo l'analisi.
           </Paragraph>
 
-          <Heading>2. Invio dei dati a OpenAI tramite API</Heading>
+          <Heading>Invio dei dati a OpenAI tramite API</Heading>
 
           <Paragraph>
             Per eseguire l'analisi del CV, Pentametro invia le immagini delle
@@ -72,7 +72,7 @@ export const PrivacyPolicyModal = (props: PrivacyPolicyModalProps) => (
             per ulteriori dettagli sulla gestione dei dati tramite le loro API.
           </Paragraph>
 
-          <Heading>3. Informazioni personali nei CV</Heading>
+          <Heading>Informazioni personali nei CV</Heading>
 
           <Paragraph>
             Ti consigliamo di includere informazioni di contatto (come nome,
@@ -82,7 +82,7 @@ export const PrivacyPolicyModal = (props: PrivacyPolicyModalProps) => (
             l'analisi e non sono memorizzate da Pentametro.
           </Paragraph>
 
-          <Heading>4. Sicurezza dei dati</Heading>
+          <Heading>Sicurezza dei dati</Heading>
 
           <Paragraph>
             I dati inviati a Pentametro vengono gestiti in modo sicuro e non
@@ -91,7 +91,7 @@ export const PrivacyPolicyModal = (props: PrivacyPolicyModalProps) => (
             valutazione e non vengono conservati per utilizzi futuri.
           </Paragraph>
 
-          <Heading>5. Uso del servizio</Heading>
+          <Heading>Uso del servizio</Heading>
 
           <Paragraph>
             Utilizzando Pentametro, accetti i termini di questa privacy policy.
@@ -100,7 +100,7 @@ export const PrivacyPolicyModal = (props: PrivacyPolicyModalProps) => (
             necessari per la valutazione.
           </Paragraph>
 
-          <Heading>6. Modifiche alla privacy policy</Heading>
+          <Heading>Modifiche alla privacy policy</Heading>
 
           <Paragraph>
             Pentametro si riserva il diritto di aggiornare questa Privacy Policy

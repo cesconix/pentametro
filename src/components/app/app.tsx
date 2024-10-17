@@ -8,8 +8,9 @@ import { Welcome } from "@/components/welcome"
 import { useAutoScroll } from "@/hooks/use-auto-scroll"
 import type { PentaChecklist, PentaReport } from "@/lib/types"
 import { evaluatePDF } from "@/lib/utils"
-import { LoaderIcon } from "lucide-react"
+import { ReportDisclaimer } from "../report/report-disclaimer"
 import { ReportList } from "../report/report-list"
+import { ReportLoader } from "../report/report-loader"
 import { ReportScore } from "../report/report-score"
 
 type MainProps = {
@@ -33,14 +34,10 @@ export const App = (props: MainProps) => {
     setReport([])
   }, [])
 
-  const handleAbortPreviousRequest = () => {
+  const handleSubmit = useCallback(async () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
-  }
-
-  const handleSubmit = useCallback(async () => {
-    handleAbortPreviousRequest()
 
     const abortController = new AbortController()
     abortControllerRef.current = abortController
@@ -91,22 +88,14 @@ export const App = (props: MainProps) => {
           >
             <ReportScore checklist={props.checklist} report={report} />
             <ReportList checklist={props.checklist} report={report} />
+            <div className="flex flex-col items-center p-6 text-muted-foreground space-y-5">
+              {loading && <ReportLoader />}
+              <ReportDisclaimer />
+            </div>
           </div>
         ) : (
           <Welcome />
         )}
-        <div className="flex flex-col items-center p-6 text-muted-foreground space-y-5">
-          {loading && (
-            <div className="flex items-center justify-center text-sm">
-              <LoaderIcon className="w-4 h-4 mr-2 animate-spin" />
-              Valutazione in corso...
-            </div>
-          )}
-          <div className="text-xs text-center text-muted-foreground/80">
-            Pentametro può commettere errori.
-            <br /> Ci scusiamo per eventuali imprecisioni.
-          </div>
-        </div>
       </div>
     </div>
   )
