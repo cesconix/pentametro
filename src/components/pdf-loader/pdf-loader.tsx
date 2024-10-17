@@ -98,7 +98,8 @@ export const PdfLoader = (props: PdfLoaderProps) => {
             />
             <h3 className="font-bold mb-1">Carica il CV</h3>
             <p className="text-muted-foreground text-sm">
-              Trascina un file PDF o seleziona un file dal tuo dispositivo.
+              Trascina o seleziona il PDF del tuo curriculum per iniziare. Il
+              file non sarà memorizzato.
             </p>
             <div className="flex gap-2">
               <input
