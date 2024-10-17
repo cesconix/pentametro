@@ -124,7 +124,7 @@ export const PdfLoader = (props: PdfLoaderProps) => {
             />
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center p-3 space-y-1">
+        <div className="flex justify-center pb-6">
           <span className="text-sm text-muted-foreground">
             100% free and open source
           </span>
