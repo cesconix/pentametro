@@ -4,14 +4,45 @@ interface Props {
 }
 
 const { title } = Astro.props
+
+const openGraph = {
+  title: "Pentametro - Valuta il tuo CV con Guido Penta",
+  description:
+    "Pentametro è uno strumento gratuito e open-source che valuta la conformità del tuo CV in base alla guida ai CV di Guido Penta. Ottieni un report dettagliato con la checklist dei requisiti.",
+  url: "https://pentametro.vercel.app",
+  image: "https://pentametro.vercel.app/banner.jpg"
+}
 ---
 <meta charset="utf-8" />
-<link rel="icon" href="/favicon.png" type="image/png" />
+
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
+
 <title>{title}</title>
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon.png" type="image/png" />
+
+<!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+<!-- Plausible -->
 <script is:inline defer data-domain="pentametro.vercel.app" src="https://plausible.io/js/script.js"></script>
+
+<!-- Open Graph -->
+<meta property="og:title" content={openGraph.title} />
+<meta property="og:description" content={openGraph.description} />
+<meta property="og:url" content={openGraph.url} />
+<meta property="og:image" content={openGraph.image} />
+<meta property="og:type" content="website" />
+
+<!-- Twitter Card -->
+<meta name="twitter:title" content={openGraph.title} />
+<meta name="twitter:description" content={openGraph.description} />
+<meta name="twitter:url" content={openGraph.url} />
+<meta name="twitter:image" content={openGraph.image} />
+<meta name="twitter:card" content="summary_large_image" />
+
