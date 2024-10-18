@@ -1,5 +1,7 @@
-import * as pdfjsLib from "pdfjs-dist/build/pdf.min.mjs"
-import "pdfjs-dist/build/pdf.worker.min.mjs"
+import * as pdfjs from "pdfjs-dist"
+import workerSrc from "pdfjs-dist/build/pdf.worker?url"
+
+pdfjs.GlobalWorkerOptions.workerSrc = workerSrc
 
 export const convertPdfBufferToBase64Strings = async (
   arrayBuffer: ArrayBuffer
@@ -7,7 +9,7 @@ export const convertPdfBufferToBase64Strings = async (
   const pages: string[] = []
 
   const pdfData = new Uint8Array(arrayBuffer)
-  const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise
+  const pdf = await pdfjs.getDocument({ data: pdfData }).promise
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page = await pdf.getPage(pageNum)
