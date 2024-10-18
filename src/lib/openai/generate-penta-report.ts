@@ -44,7 +44,7 @@ export async function generatePentaReport(
 
         buffer += content
 
-        if (buffer.includes("}")) {
+        while (buffer.includes("}")) {
           const openBracesCount = (buffer.match(/{/g) || []).length
           const closeBracesCount = (buffer.match(/}/g) || []).length
 
@@ -54,9 +54,16 @@ export async function generatePentaReport(
 
             const jsonString = buffer.slice(startIdx, endIdx)
 
-            controller.enqueue(`data: ${jsonString}\n\n`)
+            try {
+              JSON.parse(jsonString)
+              controller.enqueue(`${jsonString}\n\n`)
+            } catch (error) {
+              console.error("JSON parsing failed:", error, jsonString)
+            }
 
             buffer = buffer.slice(endIdx)
+          } else {
+            break
           }
         }
       }
@@ -79,7 +86,7 @@ ${checklist}
 2. **Foto Profilo**: Identifica una foto profilo oppure un avatar.
 3. **Analisi dei Contenuti**: Verifica la conformità dei contenuti rispetto ai requisiti della checklist. Concentrati esclusivamente sui requisiti forniti.
 4. **Formato CV**: Controlla accuratamente il formato del CV e verifica che sia conforme al requisito specificato.
-5. **Generazione del Report**: Produci un report in formato JSON, seguendo questa struttura (in una sola riga senza spazi tra le proprietà):
+5. **Generazione del Report**: Produci un report in formato JSON serializzato in una singola riga, senza spazi tra le proprietà, senza interruzioni di linea e senza alcun testo aggiuntivo. Segui questa struttura:
 
 [
   {
@@ -95,5 +102,5 @@ ${checklist}
 - Se un requisito non è soddisfatto o non può essere verificato (es. lingua non identificabile, formato Europass errato), imposta "compliant" su false e fornisci un commento costruttivo.
 - Fornisci commenti chiari e concisi con suggerimenti pratici per migliorare il CV. Evita riferimenti a contesti non rilevanti come annunci di lavoro.
 
-Analizza tutte le pagine e fornisci un report dettagliato.
+Analizza tutte le pagine e fornisci un report dettagliato solo in formato JSON e in una sola riga.
 `.trim()
