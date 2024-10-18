@@ -50,13 +50,13 @@ export async function generatePentaReport(
 
           if (openBracesCount === closeBracesCount) {
             const startIdx = buffer.indexOf("{")
-            const endIdx = buffer.lastIndexOf("}") + 1
+            const endIdx = buffer.indexOf("}") + 1
 
             const jsonString = buffer.slice(startIdx, endIdx)
 
             try {
-              JSON.parse(jsonString)
-              controller.enqueue(`${jsonString}\n\n`)
+              const parsed = JSON.parse(jsonString)
+              controller.enqueue(`data:${JSON.stringify(parsed)}\n\n`)
             } catch (error) {
               console.error("JSON parsing failed:", error, jsonString)
             }
