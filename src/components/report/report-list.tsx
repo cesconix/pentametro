@@ -3,7 +3,7 @@ import { ReportItem } from "./report-item"
 
 type ReportProps = {
   checklist: PentaChecklist
-  report: PentaReport
+  report: PentaReport | []
 }
 
 export const ReportList = (props: ReportProps) => {

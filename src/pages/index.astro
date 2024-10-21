@@ -14,7 +14,7 @@ const checklist = await getPentaChecklist()
   <body>
     {
       checklist 
-        ? (<App client:only checklist={checklist} />) 
+        ? (<App client:only="react" checklist={checklist} />) 
         : (<p class="p-3">Error! :(</p>)
     }
   </body>

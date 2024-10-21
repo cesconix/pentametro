@@ -5,11 +5,10 @@ export type PentaRequirement = {
 
 export type PentaChecklist = {
   category: string
-  mandatory: boolean
   checklist: PentaRequirement[]
 }[]
 
-export type PentaReport = PentaReportItem[]
+export type PentaReport = PentaReportItem[] | []
 
 export type PentaReportItem = {
   id: string

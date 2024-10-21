@@ -1,4 +1,5 @@
-import type { ChatCompletionContentPart } from "openai/resources/index.mjs"
+import { type UserContent, streamObject } from "ai"
+import { z } from "zod"
 import type { PentaChecklist } from "../types"
 import { createClient } from "./utils"
 
@@ -8,14 +9,19 @@ export async function generatePentaReport(
 ) {
   const openai = createClient()
 
-  const images: ChatCompletionContentPart[] = base64Images.map((base64) => ({
-    type: "image_url",
-    image_url: { url: `data:image/png;base64,${base64}` }
+  const images: UserContent = base64Images.map((base64) => ({
+    type: "image",
+    image: `data:image/png;base64,${base64}`
   }))
 
-  const stream = await openai.chat.completions.create({
-    stream: true,
-    model: "gpt-4o-mini",
+  const result = await streamObject({
+    model: openai("gpt-4o-mini"),
+    output: "array",
+    schema: z.object({
+      id: z.string(),
+      compliant: z.boolean(),
+      comment: z.string()
+    }),
     messages: [
       {
         role: "system",
@@ -34,49 +40,22 @@ export async function generatePentaReport(
     ]
   })
 
-  const reportStream = new ReadableStream({
-    async start(controller) {
-      let buffer = ""
+  return result
 
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content
-        if (!content) continue
-
-        buffer += content
-
-        while (buffer.includes("}")) {
-          const openBracesCount = (buffer.match(/{/g) || []).length
-          const closeBracesCount = (buffer.match(/}/g) || []).length
-
-          if (openBracesCount === closeBracesCount) {
-            const startIdx = buffer.indexOf("{")
-            const endIdx = buffer.indexOf("}") + 1
-
-            const jsonString = buffer.slice(startIdx, endIdx)
-
-            try {
-              const parsed = JSON.parse(jsonString)
-              controller.enqueue(`data:${JSON.stringify(parsed)}\n\n`)
-            } catch (error) {
-              console.error("JSON parsing failed:", error, jsonString)
-            }
-
-            buffer = buffer.slice(endIdx)
-          } else {
-            break
-          }
-        }
-      }
-
-      controller.close()
-    }
-  })
-
-  return reportStream
+  // const reportStream = new ReadableStream({
+  //   async start(controller) {
+  //     for await (const chunk of result.partialObjectStream) {
+  //       controller.enqueue(`data:${JSON.stringify(chunk)}\n\n`)
+  //     }
+  //     controller.close()
+  //   }
+  // })
+  //
+  // return reportStream
 }
 
-const systemPrompt = (checklist: string) =>
-  `
+function systemPrompt(checklist: string) {
+  return `
 Sei un assistente esperto nell'analisi di CV e nella generazione di report di conformità basati su checklist predefinite. Riceverai una o più immagini di un CV, ciascuna rappresentante una pagina. Devi analizzare tutte le pagine ricevute e confrontarle con la checklist seguente:
 
 ${checklist}
@@ -104,3 +83,4 @@ ${checklist}
 
 Analizza tutte le pagine e fornisci un report dettagliato solo in formato JSON e in una sola riga.
 `.trim()
+}

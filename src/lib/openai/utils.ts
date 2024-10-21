@@ -1,6 +1,6 @@
-import OpenAI from "openai"
+import { type OpenAIProvider, createOpenAI } from "@ai-sdk/openai"
 
-let openai: OpenAI | null = null
+let openai: OpenAIProvider | null = null
 
 export const createClient = () => {
   const { OPENAI_API_KEY } = import.meta.env
@@ -9,30 +9,14 @@ export const createClient = () => {
   }
 
   if (!openai) {
-    openai = new OpenAI({
-      apiKey: import.meta.env.OPENAI_API_KEY
-    })
+    openai = createOpenAI({ apiKey: OPENAI_API_KEY })
   }
 
   return openai
 }
 
-export function parseChatCompletion(
-  completion: OpenAI.ChatCompletion,
-  brackets: "[]" | "{}"
-) {
-  const answer = completion.choices[0].message.content
-
-  if (!answer) {
-    console.error(`failed to evaluate. answer: "${completion}"`)
-    throw new Error("failed to evaluate")
-  }
-
-  return parseChunk(answer, brackets)
-}
-
 export function parseChunk(chunk: string, brackets: "[]" | "{}") {
-  const startIdx = chunk.indexOf(brackets[0])
+  const startIdx = chunk.lastIndexOf(brackets[0])
   const endIdx = chunk.lastIndexOf(brackets[1]) + 1
 
   const jsonString = chunk.slice(startIdx, endIdx)

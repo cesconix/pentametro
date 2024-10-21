@@ -28,11 +28,5 @@ export const POST: APIRoute = async ({ request }) => {
 
   const stream = await openai.generatePentaReport(base64Images, checklist)
 
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive"
-    }
-  })
+  return stream.toTextStreamResponse()
 }

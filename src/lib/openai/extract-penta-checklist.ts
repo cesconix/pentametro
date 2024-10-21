@@ -1,11 +1,22 @@
-import type { PentaChecklist } from "../types"
-import { createClient, parseChatCompletion } from "./utils"
+import { generateObject } from "ai"
+import { z } from "zod"
+import { createClient } from "./utils"
 
 export async function extractPentaChecklist(markdown: string) {
   const openai = createClient()
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+  const result = await generateObject({
+    model: openai("gpt-4o-mini"),
+    output: "array",
+    schema: z.object({
+      category: z.string(),
+      checklist: z.array(
+        z.object({
+          requirement: z.string(),
+          description: z.string()
+        })
+      )
+    }),
     messages: [
       {
         role: "system",
@@ -18,7 +29,7 @@ export async function extractPentaChecklist(markdown: string) {
     ]
   })
 
-  return parseChatCompletion(completion, "[]") as PentaChecklist
+  return result.object
 }
 
 const systemPrompt = `

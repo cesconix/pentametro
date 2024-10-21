@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { experimental_useObject as useObject } from "ai/react"
+import { useCallback, useEffect, useState } from "react"
+import { z } from "zod"
 
 import { Header } from "@/components/header"
 import { PdfLoader } from "@/components/pdf-loader"
@@ -7,7 +9,6 @@ import { Welcome } from "@/components/welcome"
 
 import { useAutoScroll } from "@/hooks/use-auto-scroll"
 import type { PentaChecklist, PentaReport } from "@/lib/types"
-import { evaluatePDF } from "@/lib/utils"
 import { ReportDisclaimer } from "../report/report-disclaimer"
 import { ReportList } from "../report/report-list"
 import { ReportLoader } from "../report/report-loader"
@@ -19,48 +20,41 @@ type MainProps = {
 
 export const App = (props: MainProps) => {
   const [pages, setPages] = useState<string[]>([])
-  const [report, setReport] = useState<PentaReport>([])
-  const [loading, setLoading] = useState(false)
+  const [evaluated, setEvaluated] = useState(false)
+
+  const { object, submit, stop, isLoading } = useObject({
+    api: "/api/evaluate",
+    initialValue: [],
+    schema: z.array(
+      z.object({
+        id: z.string(),
+        compliant: z.boolean(),
+        comment: z.string()
+      })
+    ),
+    onFinish(event) {
+      setEvaluated(true)
+    }
+  })
 
   const autoScroll = useAutoScroll()
 
-  const abortControllerRef = useRef<AbortController | null>(null)
-
   const handleReset = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
     setPages([])
-    setReport([])
-  }, [])
+    setEvaluated(false)
+    stop()
+  }, [stop])
 
   const handleSubmit = useCallback(async () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-
-    try {
-      setLoading(true)
-      await evaluatePDF(pages, abortController, (chunk) => {
-        setReport((prev) => [...prev, chunk])
-      })
-    } catch (error) {
-      if (abortController.signal.aborted) return
-      console.error("Error while evaluating:", error)
-      alert("Error while evaluating")
-    } finally {
-      setLoading(false)
-    }
-  }, [pages])
+    stop()
+    submit({ base64Images: pages.map((page) => page.split(",")[1]) })
+  }, [pages, stop, submit])
 
   useEffect(() => {
-    if (pages.length > 0) {
+    if (pages.length > 0 && !isLoading && !evaluated) {
       handleSubmit()
     }
-  }, [pages, handleSubmit])
+  }, [pages, handleSubmit, isLoading, evaluated])
 
   const sessionActive = pages.length > 0
 
@@ -86,10 +80,16 @@ export const App = (props: MainProps) => {
             ref={autoScroll.setContentViewRef}
             className="flex flex-col flex-1 relative"
           >
-            <ReportScore checklist={props.checklist} report={report} />
-            <ReportList checklist={props.checklist} report={report} />
+            <ReportScore
+              checklist={props.checklist}
+              report={object as PentaReport}
+            />
+            <ReportList
+              checklist={props.checklist}
+              report={object as PentaReport}
+            />
             <div className="flex flex-col items-center p-6 text-muted-foreground space-y-5">
-              {loading && <ReportLoader />}
+              {isLoading && <ReportLoader />}
               <ReportDisclaimer />
             </div>
           </div>
